@@ -97,7 +97,7 @@ public class HammerWeatherDB {
 	public List<City> loadCities(int provinceId) {
 		City city=null;
 		List<City> list = new ArrayList<City>();
-		Cursor cursor = db.query("City", null, "where province_id=?",
+		Cursor cursor = db.query("City", null, "province_id=?",
 				new String[] { String.valueOf(provinceId) }, null, null, null);
 		while(cursor.moveToNext()){
 			city=new City();

@@ -1,5 +1,15 @@
 package com.example.hammerweather.Utils;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
 import com.example.hammerweather.db.HammerWeatherDB;
@@ -74,6 +84,48 @@ public class Utility {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * 解析服务器返回的JSON数据，并将解析出的数据存储到本地。
+	 */
+	public static void handWeatherResponse(Context context,String response){
+		try {
+			JSONObject jsonObj=new JSONObject(response);
+			JSONObject jsonWeatherInfo=jsonObj.getJSONObject("weatherinfo");
+			String cityName = jsonWeatherInfo.getString("city");
+			String cityId = jsonWeatherInfo.getString("cityid");
+			String temp1 = jsonWeatherInfo.getString("temp1");
+			String temp2 = jsonWeatherInfo.getString("temp2");
+			String weatherDesc = jsonWeatherInfo.getString("weather");
+			String publishTime = jsonWeatherInfo.getString("ptime");
+			saveWeatherInfo(context,cityName,cityId,temp1,temp2,weatherDesc,publishTime);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	/**
+	 * 将服务器返回的所有天气信息存储到SharedPreferences文件中。
+	 */
+	public static void saveWeatherInfo(Context context, String cityName,
+			String cityId, String temp1, String temp2, String weatherDesc,
+			String publishTime) {
+		// TODO Auto-generated method stub
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy年M月d日", Locale.CHINA);
+	
+		SharedPreferences.Editor editor = PreferenceManager
+.getDefaultSharedPreferences(context).edit();
+		editor.putBoolean("city_selected", true);
+		editor.putString("city_name", cityName);
+		editor.putString("weather_code", cityId);
+		editor.putString("temp1", temp1);
+		editor.putString("temp2", temp2);
+		editor.putString("weather_desp", weatherDesc);
+		editor.putString("publish_time", publishTime);
+		editor.putString("current_date", sdf.format(new Date()));
+		editor.commit();
 	}
 
 }
