@@ -1,9 +1,5 @@
 package com.example.hammerweather.activity;
 
-import com.example.hammerweather.R;
-import com.example.hammerweather.Utils.HttpUtil;
-import com.example.hammerweather.Utils.Utility;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,6 +12,11 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.example.hammerweather.R;
+import com.example.hammerweather.Utils.HttpUtil;
+import com.example.hammerweather.Utils.Utility;
+import com.example.hammerweather.service.AutoUpdateService;
 
 
 public class WeatherActivity extends Activity implements OnClickListener {
@@ -184,5 +185,8 @@ public class WeatherActivity extends Activity implements OnClickListener {
 		tv_currentDate.setText(prefs.getString("current_date", ""));
 		ll_weatherInfo.setVisibility(View.VISIBLE);
 		tv_cityName.setVisibility(View.VISIBLE);
+		
+		Intent intent = new Intent(this, AutoUpdateService.class);
+		startService(intent);
 	}
 }

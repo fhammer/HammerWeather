@@ -25,6 +25,10 @@
             </intent-filter>
         </activity>
         <activity android:name="com.example.hammerweather.activity.WeatherActivity" />
+
+        <service android:name="com.example.hammerweather.service.AutoUpdateService" />
+
+        <receiver android:name="com.example.hammerweather.reciver.AutoUpdateReceiver" />
     </application>
 
 </manifest>
