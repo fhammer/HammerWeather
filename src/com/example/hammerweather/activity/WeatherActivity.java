@@ -1,7 +1,6 @@
 package com.example.hammerweather.activity;
 
 import com.example.hammerweather.R;
-import com.example.hammerweather.R.id;
 import com.example.hammerweather.Utils.HttpUtil;
 import com.example.hammerweather.Utils.Utility;
 
@@ -18,7 +17,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-@SuppressWarnings("unused")
+
 public class WeatherActivity extends Activity implements OnClickListener {
 
 	private LinearLayout ll_weatherInfo;
@@ -55,6 +54,7 @@ public class WeatherActivity extends Activity implements OnClickListener {
 	 */
 	private Button btn_refreshWeather;
 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub

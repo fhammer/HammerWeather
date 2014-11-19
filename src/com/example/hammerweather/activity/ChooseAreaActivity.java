@@ -64,19 +64,27 @@ public class ChooseAreaActivity extends Activity {
 	 */
 	private int currentLevel;
 
+	/**
+	 * 是否从WeatherActivity中跳转过来。
+	 */
+	private boolean isFromWeatherActivity;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		
-		SharedPreferences prefs = PreferenceManager. getDefaultSharedPreferences(this);
-		if (prefs.getBoolean("city_selected", false)) {
+		isFromWeatherActivity = getIntent().getBooleanExtra(
+				"from_weather_activity", false);
+	//	Log.i(TAG, isFromWeatherActivity+"");
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		if (prefs.getBoolean("city_selected", false)&& !isFromWeatherActivity) {
 			Intent intent = new Intent(this, WeatherActivity.class);
 			startActivity(intent);
 			finish();
 			return;
 		}
-		
+
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.choose_area);
 
@@ -96,9 +104,11 @@ public class ChooseAreaActivity extends Activity {
 				} else if (currentLevel == LEVEL_CITY) {
 					selectedCity = cityList.get(position);
 					queryCounties();
-				}else if (currentLevel == LEVEL_COUNTY) {
-					String countyCode = countyList.get(position).getCountyCode();
-					Intent intent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
+				} else if (currentLevel == LEVEL_COUNTY) {
+					String countyCode = countyList.get(position)
+							.getCountyCode();
+					Intent intent = new Intent(ChooseAreaActivity.this,
+							WeatherActivity.class);
 					intent.putExtra("county_code", countyCode);
 					startActivity(intent);
 					finish();
@@ -169,7 +179,8 @@ public class ChooseAreaActivity extends Activity {
 	private void queryFromServer(String code, final String type) {
 		String address;
 		if (!TextUtils.isEmpty(code)) {
-			address = "http://www.weather.com.cn/data/list3/city" + code + ".xml";
+			address = "http://www.weather.com.cn/data/list3/city" + code
+					+ ".xml";
 		} else {
 			address = "http://www.weather.com.cn/data/list3/city.xml";
 		}
@@ -182,8 +193,8 @@ public class ChooseAreaActivity extends Activity {
 					result = Utility.handleProvincesResponse(weatherDB,
 							response);
 				} else if ("city".equals(type)) {
-					result = Utility.handleCitiesResponse(weatherDB,
-							response, selectedProvince.getId());
+					result = Utility.handleCitiesResponse(weatherDB, response,
+							selectedProvince.getId());
 				} else if ("county".equals(type)) {
 					result = Utility.handleCountiesResponse(weatherDB,
 							response, selectedCity.getId());
@@ -214,8 +225,8 @@ public class ChooseAreaActivity extends Activity {
 					@Override
 					public void run() {
 						closeProgressDialog();
-						Toast.makeText(ChooseAreaActivity.this,
-										"加载失败", Toast.LENGTH_SHORT).show();
+						Toast.makeText(ChooseAreaActivity.this, "加载失败",
+								Toast.LENGTH_SHORT).show();
 					}
 				});
 			}
@@ -230,13 +241,13 @@ public class ChooseAreaActivity extends Activity {
 		}
 		progressDialog.show();
 	}
-	
+
 	private void closeProgressDialog() {
 		if (progressDialog != null) {
 			progressDialog.dismiss();
 		}
 	}
-	
+
 	/**
 	 * 捕获Back按键，根据当前的级别来判断，此时应该返回市列表、省列表、还是直接退出。
 	 */
@@ -247,6 +258,10 @@ public class ChooseAreaActivity extends Activity {
 		} else if (currentLevel == LEVEL_CITY) {
 			queryProvinces();
 		} else {
+			if (isFromWeatherActivity) {
+				Intent intent = new Intent(this, WeatherActivity.class);
+				startActivity(intent);
+			}
 			finish();
 		}
 	}
